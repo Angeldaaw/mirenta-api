@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="MiRenta.API/MiRenta.API.csproj" />
+  <Project Path="MiRenta.Application/MiRenta.Application.csproj" />
+  <Project Path="MiRenta.Domain/MiRenta.Domain.csproj" />
+  <Project Path="MiRenta.Infrastructure/MiRenta.Infrastructure.csproj" />
+</Solution>
