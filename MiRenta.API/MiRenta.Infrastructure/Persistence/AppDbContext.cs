@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MiRenta.Application.Authentication.Interfaces;
 using MiRenta.Domain.Entities;
 
 namespace MiRenta.Infrastructure.Persistence
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : DbContext, IApplicationDbContext
     {
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
