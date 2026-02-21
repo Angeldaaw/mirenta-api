@@ -73,5 +73,63 @@ namespace MiRenta.API.Controllers
 
             return Ok(response);
         }
+
+        // DELETE: api/properties
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var userId = GetUserId();
+            var property = await _context.Properties.FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
+
+            if (property == null)
+                return NotFound();
+
+            _context.Properties.Remove(property);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        // UPDATE: api/properties
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Guid id, UpdatePropertyDto request)
+        {
+            var userId = GetUserId();
+            var property = await _context.Properties.FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
+
+            if (property == null)
+                return NotFound();
+
+            property.Name = request.Name;
+            property.Address = request.Address;
+            property.MonthlyRent = request.MonthlyRent;
+
+            _context.Properties.Update(property);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        // GET BY ID: api/properties
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var userId = GetUserId();
+            var property = await _context.Properties
+                .Where(p => p.Id == id && p.UserId == userId)
+                .Select(p => new PropertyResponseDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Address = p.Address,
+                    MonthlyRent = p.MonthlyRent
+                })
+                .FirstOrDefaultAsync();
+
+            if (property == null)
+                return NotFound();
+
+            return Ok(property);
+        }
     }
 }
