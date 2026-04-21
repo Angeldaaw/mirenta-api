@@ -9,5 +9,6 @@ namespace MiRenta.Application.Authentication.DTOs
     public class AuthResponseDto
     {
         public string Token { get; set; } = default!;
+        public UserDTO User { get; set; } = default!;
     }
 }

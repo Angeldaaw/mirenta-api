@@ -39,6 +39,18 @@ builder.Services
         };
     });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy
+                .WithOrigins("http://localhost:3000") // Angular/Vite/etc
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
+
 builder.Services.AddAuthorization();
 
 
@@ -52,6 +64,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 

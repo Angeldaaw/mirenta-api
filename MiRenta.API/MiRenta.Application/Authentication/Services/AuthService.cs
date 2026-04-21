@@ -33,7 +33,18 @@ namespace MiRenta.Application.Authentication.Services
 
             // Generate JWT token
             var token = GetToken(user.Id, user.Email);
-            return new AuthResponseDto { Token = token };
+            var response = new AuthResponseDto
+            {
+                Token = token,
+                User = new UserDTO
+                {
+                    Name = user.Name,
+                    LastName = user.LastName,
+                    Email = user.Email
+                }
+            };
+
+            return response;
         }
 
         public async Task<AuthResponseDto> RegisterAsync(RegisterRequestDto request)
