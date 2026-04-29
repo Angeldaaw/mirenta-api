@@ -29,9 +29,9 @@ namespace MiRenta.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var userId = GetUserId();
+            Guid userId = GetUserId();
 
-            var properties = await _context.Properties
+            List<PropertyResponseDto> properties = await _context.Properties
                 .Where(p => p.UserId == userId)
                 .Select(p => new PropertyResponseDto
                 {
@@ -49,7 +49,7 @@ namespace MiRenta.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreatePropertyDto request)
         {
-            var userId = GetUserId();
+            Guid userId = GetUserId();
 
             var property = new Property
             {
@@ -78,8 +78,8 @@ namespace MiRenta.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var userId = GetUserId();
-            var property = await _context.Properties.FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
+            Guid userId = GetUserId();
+            Property? property = await _context.Properties.FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
 
             if (property == null)
                 return NotFound();
@@ -94,8 +94,8 @@ namespace MiRenta.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, UpdatePropertyDto request)
         {
-            var userId = GetUserId();
-            var property = await _context.Properties.FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
+            Guid userId = GetUserId();
+            Property? property = await _context.Properties.FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
 
             if (property == null)
                 return NotFound();
@@ -114,8 +114,8 @@ namespace MiRenta.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var userId = GetUserId();
-            var property = await _context.Properties
+            Guid userId = GetUserId();
+            PropertyResponseDto? property = await _context.Properties
                 .Where(p => p.Id == id && p.UserId == userId)
                 .Select(p => new PropertyResponseDto
                 {
