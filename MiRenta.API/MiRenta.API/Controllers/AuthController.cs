@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MiRenta.Application.Authentication.DTOs;
 using MiRenta.Application.Authentication.Interfaces;
+using MiRenta.Application.Common;
 
 namespace MiRenta.API.Controllers
 {

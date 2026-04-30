@@ -2,6 +2,7 @@
 using MiRenta.Application.Authentication.DTOs;
 using MiRenta.Application.Authentication.Interfaces;
 using MiRenta.Domain.Entities;
+using MiRenta.Application.Common;
 
 namespace MiRenta.Application.Authentication.Services
 {

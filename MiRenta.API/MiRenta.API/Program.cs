@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MiRenta.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using MiRenta.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
