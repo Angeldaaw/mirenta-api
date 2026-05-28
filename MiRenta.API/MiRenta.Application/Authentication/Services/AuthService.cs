@@ -26,7 +26,7 @@ namespace MiRenta.Application.Authentication.Services
         {
             // Find user by email
             var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == request.Email);
+                .FirstOrDefaultAsync(u => u.Email == request.Email && u.Activo);
 
             // Validate credentials
             if (user == null || !_passwordHasher.Verify(request.Password, user.PasswordHash))

@@ -19,14 +19,23 @@ namespace MiRenta.Infrastructure.Persistence
             modelBuilder.Entity<User>(entity =>
             {
                 entity.Property(u => u.Name)
-                    .HasMaxLength(100)
+                    .HasMaxLength(50)
+                    .IsRequired();
+
+                entity.Property(u => u.LastName)
+                    .HasMaxLength(50)
                     .IsRequired();
 
                 entity.Property(u => u.Email)
                     .HasMaxLength(100)
                     .IsRequired();
 
+                entity.Property(u => u.PasswordHash)
+                    .HasMaxLength(200)
+                    .IsRequired();
 
+                entity.Property(u => u.Activo)
+                    .HasDefaultValue(true);
             });
 
             modelBuilder.Entity<Property>(entity =>
@@ -43,8 +52,14 @@ namespace MiRenta.Infrastructure.Persistence
                     .HasPrecision(18, 2);
 
                 entity.Property(p => p.Status)
-                    .
+                    .HasMaxLength(30)
+                    .IsRequired();
 
+                entity.Property(p => p.Active)
+                    .HasDefaultValue(true);
+
+                entity.Property(p => p.CreatedAt)
+                    .HasDefaultValueSql("SYSUTCDATETIME()");
             });
         }
     }

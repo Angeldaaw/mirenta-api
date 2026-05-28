@@ -14,6 +14,7 @@ namespace MiRenta.Domain.Entities
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
         public bool Activo { get; set; }
+
         public ICollection<Property> Properties { get; set; } = new List<Property>();
     }
 }
