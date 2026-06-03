@@ -55,11 +55,14 @@ namespace MiRenta.Infrastructure.Persistence
                     .HasMaxLength(30)
                     .IsRequired();
 
-                entity.Property(p => p.Active)
-                    .HasDefaultValue(true);
+                entity.Property(p => p.IsDeleted)
+                    .HasDefaultValue(false);
 
                 entity.Property(p => p.CreatedAt)
                     .HasDefaultValueSql("SYSUTCDATETIME()");
+
+                entity.Property(p => p.UserId)
+                    .IsRequired();
             });
         }
     }

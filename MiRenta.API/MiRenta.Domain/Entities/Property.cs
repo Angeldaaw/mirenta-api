@@ -14,7 +14,6 @@ namespace MiRenta.Domain.Entities
         public string Address { get; set; } = string.Empty;
         public decimal MonthlyRent { get; set; }
         public string Status { get; set; } = "Available";
-        public bool Active { get; set; }
         public bool IsDeleted { get; set; } = false;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
