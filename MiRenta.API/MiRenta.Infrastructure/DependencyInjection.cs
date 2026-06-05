@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MiRenta.Application.Authentication.Interfaces;
 using MiRenta.Application.Authentication.Services;
+using MiRenta.Application.Owners.Interfaces;
+using MiRenta.Application.Owners.Services;
 using MiRenta.Infrastructure.Persistence;
 using MiRenta.Infrastructure.Security;
 
@@ -15,6 +17,7 @@ namespace MiRenta.Infrastructure
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IOwnerService, OwnerService>();
             services.AddScoped<IApplicationDbContext>(provider =>
                 provider.GetRequiredService<AppDbContext>());
 

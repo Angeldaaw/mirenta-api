@@ -4,6 +4,7 @@ using MiRenta.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MiRenta.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260603165347_AddRentalManagementTables")]
+    partial class AddRentalManagementTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -259,9 +262,7 @@ namespace MiRenta.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId", "Email")
-                        .IsUnique()
-                        .HasFilter("[IsActive] = 1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Owners");
                 });
@@ -371,9 +372,6 @@ namespace MiRenta.Infrastructure.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<Guid?>("OwnerId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -386,8 +384,6 @@ namespace MiRenta.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OwnerId");
 
                     b.HasIndex("UserId");
 
@@ -757,18 +753,11 @@ namespace MiRenta.Infrastructure.Migrations
 
             modelBuilder.Entity("MiRenta.Domain.Entities.Property", b =>
                 {
-                    b.HasOne("MiRenta.Domain.Entities.Owner", "Owner")
-                        .WithMany("Properties")
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("MiRenta.Domain.Entities.User", "User")
                         .WithMany("Properties")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Owner");
 
                     b.Navigation("User");
                 });
@@ -841,11 +830,6 @@ namespace MiRenta.Infrastructure.Migrations
                     b.Navigation("Documents");
 
                     b.Navigation("Payments");
-                });
-
-            modelBuilder.Entity("MiRenta.Domain.Entities.Owner", b =>
-                {
-                    b.Navigation("Properties");
                 });
 
             modelBuilder.Entity("MiRenta.Domain.Entities.Payment", b =>
