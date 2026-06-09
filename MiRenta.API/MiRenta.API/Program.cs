@@ -4,6 +4,8 @@ using MiRenta.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using MiRenta.API.Middleware;
+using MiRenta.Application.Tenants.Interfaces;
+using MiRenta.Application.Tenants.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

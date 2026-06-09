@@ -49,20 +49,17 @@ namespace MiRenta.Application.Tenants.Services
                 return Result<TenantResponseDto>.Fail(validationError, ErrorType.Validation);
 
             string email = NormalizeEmail(request.Email);
-            bool emailExists = await _context.Tenants.Where(t => t.Email == email && t.IsActive).AnyAsync();
+            bool emailExists = await _context.Tenants.Where(t => t.Email == email && t.UserId == userId && t.IsActive).AnyAsync();
 
             if (emailExists)
                 return Result<TenantResponseDto>.Fail("El correo electrónico ya está registrado.", ErrorType.Conflict);
-
-            bool identificationNumberExists = await _context.Tenants
-                .Where(t => t.IdentificationNumber == request.IdentificationNumber && t.IsActive).AnyAsync();
 
             var tenant = new Tenant
             {
                 Id = Guid.NewGuid(),
                 Name = request.Name.Trim(),
-                LastName = request.LastName,
-                Email = request.Email.Trim(),
+                LastName = request.LastName.Trim(),
+                Email = email,
                 Phone = request.Phone.Trim(),
                 IdentificationNumber = request.IdentificationNumber?.Trim(),
                 UserId = userId
@@ -113,10 +110,10 @@ namespace MiRenta.Application.Tenants.Services
                 .FirstOrDefaultAsync();
 
             if (tenant == null)
-                return Result.Fail("Inquilino no encontrado");
+                return Result.Fail("Inquilino no encontrado", ErrorType.NotFound);
 
             bool hasLeases = await _context.Leases
-                .Where(l => l.TenantId == id && l.EndDate > DateTime.UtcNow)
+                .Where(l => l.TenantId == id && l.Status == "Active")
                 .AnyAsync();
 
             if (hasLeases)

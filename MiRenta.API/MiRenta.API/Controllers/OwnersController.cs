@@ -10,7 +10,7 @@ namespace MiRenta.API.Controllers
     [Authorize]
     [ApiController]
     [Route("api/owners")]
-    public class OwnersController : ControllerBase
+    public class OwnersController : BaseApiController
     {
         private readonly IOwnerService _ownerService;
 
@@ -22,8 +22,7 @@ namespace MiRenta.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            Guid userId = GetUserId();
-            Result<List<OwnerResponseDto>> result = await _ownerService.GetAllAsync(userId);
+            Result<List<OwnerResponseDto>> result = await _ownerService.GetAllAsync(UserId);
 
             return ToActionResult(result);
         }
@@ -31,8 +30,7 @@ namespace MiRenta.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            Guid userId = GetUserId();
-            Result<OwnerResponseDto> result = await _ownerService.GetByIdAsync(id, userId);
+            Result<OwnerResponseDto> result = await _ownerService.GetByIdAsync(id, UserId);
 
             return ToActionResult(result);
         }
@@ -40,8 +38,7 @@ namespace MiRenta.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateOwnerDto request)
         {
-            Guid userId = GetUserId();
-            Result<OwnerResponseDto> result = await _ownerService.CreateAsync(request, userId);
+            Result<OwnerResponseDto> result = await _ownerService.CreateAsync(request, UserId);
 
             if (!result.Success)
                 return ToActionResult(result);
@@ -52,8 +49,7 @@ namespace MiRenta.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, UpdateOwnerDto request)
         {
-            Guid userId = GetUserId();
-            Result<OwnerResponseDto> result = await _ownerService.UpdateAsync(id, request, userId);
+            Result<OwnerResponseDto> result = await _ownerService.UpdateAsync(id, request, UserId);
 
             return ToActionResult(result);
         }
@@ -61,41 +57,12 @@ namespace MiRenta.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            Guid userId = GetUserId();
-            Result result = await _ownerService.DeleteAsync(id, userId);
+            Result result = await _ownerService.DeleteAsync(id, UserId);
 
             if (result.Success)
                 return NoContent();
 
             return ToActionResult(result);
-        }
-
-        private Guid GetUserId()
-        {
-            return Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-        }
-
-        private IActionResult ToActionResult<T>(Result<T> result)
-        {
-            if (result.Success)
-                return Ok(result.Data);
-
-            return result.ErrorType switch
-            {
-                ErrorType.NotFound => NotFound(new { error = result.Error }),
-                ErrorType.Conflict => Conflict(new { error = result.Error }),
-                _ => BadRequest(new { error = result.Error })
-            };
-        }
-
-        private IActionResult ToActionResult(Result result)
-        {
-            return result.ErrorType switch
-            {
-                ErrorType.NotFound => NotFound(new { error = result.Error }),
-                ErrorType.Conflict => Conflict(new { error = result.Error }),
-                _ => BadRequest(new { error = result.Error })
-            };
         }
     }
 }
