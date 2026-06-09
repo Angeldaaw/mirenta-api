@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiRenta.Application.Tenant.DTOs
+namespace MiRenta.Application.Tenants.DTOs
 {
     public class TenantResponseDto
     {
