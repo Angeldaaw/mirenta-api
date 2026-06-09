@@ -23,7 +23,7 @@ namespace MiRenta.API.Controllers
         public async Task<IActionResult> GetAll()
         {
             Guid userId = GetUserId();
-            var result = await _ownerService.GetAllAsync(userId);
+            Result<List<OwnerResponseDto>> result = await _ownerService.GetAllAsync(userId);
 
             return ToActionResult(result);
         }
@@ -32,7 +32,7 @@ namespace MiRenta.API.Controllers
         public async Task<IActionResult> GetById(Guid id)
         {
             Guid userId = GetUserId();
-            var result = await _ownerService.GetByIdAsync(id, userId);
+            Result<OwnerResponseDto> result = await _ownerService.GetByIdAsync(id, userId);
 
             return ToActionResult(result);
         }
@@ -41,7 +41,7 @@ namespace MiRenta.API.Controllers
         public async Task<IActionResult> Create(CreateOwnerDto request)
         {
             Guid userId = GetUserId();
-            var result = await _ownerService.CreateAsync(request, userId);
+            Result<OwnerResponseDto> result = await _ownerService.CreateAsync(request, userId);
 
             if (!result.Success)
                 return ToActionResult(result);
@@ -53,7 +53,7 @@ namespace MiRenta.API.Controllers
         public async Task<IActionResult> Update(Guid id, UpdateOwnerDto request)
         {
             Guid userId = GetUserId();
-            var result = await _ownerService.UpdateAsync(id, request, userId);
+            Result<OwnerResponseDto> result = await _ownerService.UpdateAsync(id, request, userId);
 
             return ToActionResult(result);
         }
@@ -62,7 +62,7 @@ namespace MiRenta.API.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
             Guid userId = GetUserId();
-            var result = await _ownerService.DeleteAsync(id, userId);
+            Result result = await _ownerService.DeleteAsync(id, userId);
 
             if (result.Success)
                 return NoContent();

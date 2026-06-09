@@ -14,4 +14,8 @@
     <ProjectReference Include="..\MiRenta.Domain\MiRenta.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Tenant\Services\" />
+  </ItemGroup>
+
 </Project>
