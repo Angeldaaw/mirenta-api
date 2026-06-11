@@ -2,12 +2,13 @@
 using MiRenta.Application.Authentication.DTOs;
 using MiRenta.Application.Authentication.Interfaces;
 using MiRenta.Application.Common;
+using MiRenta.Application.Common.Models;
 
 namespace MiRenta.API.Controllers
 {
     [ApiController]
     [Route("api/auth")]
-    public class AuthController : ControllerBase
+    public class AuthController : BaseApiController
     {
         private readonly IAuthService _authService;
 
@@ -19,15 +20,15 @@ namespace MiRenta.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterRequestDto request)
         {
-            AuthResponseDto result = await _authService.RegisterAsync(request);
-            return Ok(result);
+            Result<AuthResponseDto> result = await _authService.RegisterAsync(request);
+            return ToActionResult(result);
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequestDto request)
         {
-            AuthResponseDto result = await _authService.LoginAsync(request);
-            return Ok(result);
+            Result<AuthResponseDto> result = await _authService.LoginAsync(request);
+            return ToActionResult(result);
         }
 
     }

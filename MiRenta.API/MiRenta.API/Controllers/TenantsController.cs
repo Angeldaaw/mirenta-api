@@ -26,5 +26,33 @@ namespace MiRenta.API.Controllers
             return ToActionResult(result);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            Result<TenantResponseDto> result = await _tenantService.GetByIdAsync(id, UserId);
+            return ToActionResult(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateTenantDto request)
+        {
+            Result<TenantResponseDto> result = await _tenantService.CreateAsync(request, UserId);
+            return ToActionResult(result);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Guid id, UpdateTenantDto request)
+        {
+            Result<TenantResponseDto> result = await _tenantService.UpdateAsync(id, request, UserId);
+            return ToActionResult(result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            Result result = await _tenantService.DeleteAsync(id, UserId);
+            return ToActionResult(result);
+        }
+
     }
 }

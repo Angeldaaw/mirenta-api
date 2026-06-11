@@ -1,4 +1,5 @@
 ﻿using MiRenta.Application.Authentication.DTOs;
+using MiRenta.Application.Common.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace MiRenta.Application.Authentication.Interfaces
 {
     public interface IAuthService
     {
-        Task<AuthResponseDto> RegisterAsync(RegisterRequestDto request);
-        Task<AuthResponseDto> LoginAsync(LoginRequestDto request);
+        Task<Result<AuthResponseDto>> RegisterAsync(RegisterRequestDto request);
+        Task<Result<AuthResponseDto>> LoginAsync(LoginRequestDto request);
     }
 }

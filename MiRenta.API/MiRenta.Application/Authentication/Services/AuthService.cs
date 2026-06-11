@@ -3,6 +3,7 @@ using MiRenta.Application.Authentication.DTOs;
 using MiRenta.Application.Authentication.Interfaces;
 using MiRenta.Domain.Entities;
 using MiRenta.Application.Common;
+using MiRenta.Application.Common.Models;
 
 namespace MiRenta.Application.Authentication.Services
 {
@@ -22,7 +23,7 @@ namespace MiRenta.Application.Authentication.Services
             _jwtService = jwtService;
         }
 
-        public async Task<AuthResponseDto> LoginAsync(LoginRequestDto request)
+        public async Task<Result<AuthResponseDto>> LoginAsync(LoginRequestDto request)
         {
             // Find user by email
             var user = await _context.Users
@@ -45,10 +46,10 @@ namespace MiRenta.Application.Authentication.Services
                 }
             };
 
-            return response;
+            return Result<AuthResponseDto>.Ok(response);
         }
 
-        public async Task<AuthResponseDto> RegisterAsync(RegisterRequestDto request)
+        public async Task<Result<AuthResponseDto>> RegisterAsync(RegisterRequestDto request)
         {
             // Check if email is already registered
             if (await _context.Users.AnyAsync(u => u.Email == request.Email))
@@ -70,7 +71,8 @@ namespace MiRenta.Application.Authentication.Services
 
             // Generate JWT token
             var token =  GetToken(user.Id, user.Email);
-            return new AuthResponseDto { Token = token };
+            var result = new AuthResponseDto { Token = token };
+            return Result<AuthResponseDto>.Ok(result);
         }
 
         private string GetToken(Guid userId, string email)
