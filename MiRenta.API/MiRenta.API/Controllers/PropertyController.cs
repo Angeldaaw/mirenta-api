@@ -1,135 +1,67 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MiRenta.Application.Authentication.Interfaces;
+using MiRenta.Application.Common.Models;
 using MiRenta.Application.Properties.DTOs;
-using MiRenta.Domain.Entities;
-using System.Security.Claims;
+using MiRenta.Application.Properties.Interfaces;
 
 namespace MiRenta.API.Controllers
 {
     [Authorize]
     [ApiController]
     [Route("api/properties")]
-    public class PropertyController : ControllerBase
+    public class PropertyController : BaseApiController
     {
-        private readonly IApplicationDbContext _context;
+        private readonly IPropertiesService _propertiesService;
 
-        public PropertyController(IApplicationDbContext context)
+        public PropertyController(IPropertiesService propertiesService)
         {
-            _context = context;
+            _propertiesService = propertiesService;
         }
 
-        private Guid GetUserId()
-        {
-            return Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-        }
-
-        // GET: api/properties
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            Guid userId = GetUserId();
+            Result<List<PropertyResponseDto>> result = await _propertiesService.GetAllAsync(UserId);
 
-            List<PropertyResponseDto> properties = await _context.Properties
-                .Where(p => p.UserId == userId)
-                .Select(p => new PropertyResponseDto
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Address = p.Address,
-                    MonthlyRent = p.MonthlyRent
-                })
-                .ToListAsync();
-
-            return Ok(properties);
+            return ToActionResult(result);
         }
 
-        // POST: api/properties
-        [HttpPost]
-        public async Task<IActionResult> Create(CreatePropertyDto request)
-        {
-            Guid userId = GetUserId();
-
-            var property = new Property
-            {
-                Id = Guid.NewGuid(),
-                Name = request.Name,
-                Address = request.Address,
-                MonthlyRent = request.MonthlyRent,
-                UserId = userId
-            };
-
-            _context.Properties.Add(property);
-            await _context.SaveChangesAsync();
-
-            var response = new PropertyResponseDto
-            {
-                Id = property.Id,
-                Name = property.Name,
-                Address = property.Address,
-                MonthlyRent = property.MonthlyRent
-            };
-
-            return Ok(response);
-        }
-
-        // DELETE: api/properties
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
-        {
-            Guid userId = GetUserId();
-            Property? property = await _context.Properties.FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
-
-            if (property == null)
-                return NotFound();
-
-            _context.Properties.Remove(property);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        // UPDATE: api/properties
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, UpdatePropertyDto request)
-        {
-            Guid userId = GetUserId();
-            Property? property = await _context.Properties.FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
-
-            if (property == null)
-                return NotFound();
-
-            property.Name = request.Name;
-            property.Address = request.Address;
-            property.MonthlyRent = request.MonthlyRent;
-
-            _context.Properties.Update(property);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        // GET BY ID: api/properties
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            Guid userId = GetUserId();
-            PropertyResponseDto? property = await _context.Properties
-                .Where(p => p.Id == id && p.UserId == userId)
-                .Select(p => new PropertyResponseDto
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Address = p.Address,
-                    MonthlyRent = p.MonthlyRent
-                })
-                .FirstOrDefaultAsync();
+            Result<PropertyResponseDto> result = await _propertiesService.GetByIdAsync(id, UserId);
 
-            if (property == null)
-                return NotFound();
+            return ToActionResult(result);
+        }
 
-            return Ok(property);
+        [HttpPost]
+        public async Task<IActionResult> Create(CreatePropertyDto request)
+        {
+            Result<PropertyResponseDto> result = await _propertiesService.CreateAsync(request, UserId);
+
+            if (!result.Success)
+                return ToActionResult(result);
+
+            return CreatedAtAction(nameof(GetById), new { id = result.Data!.Id }, result.Data);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Guid id, UpdatePropertyDto request)
+        {
+            Result<PropertyResponseDto> result = await _propertiesService.UpdateAsync(id, request, UserId);
+
+            return ToActionResult(result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            Result result = await _propertiesService.DeleteAsync(id, UserId);
+
+            if (!result.Success)
+                return ToActionResult(result);
+
+            return NoContent();
         }
     }
 }

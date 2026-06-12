@@ -51,6 +51,10 @@ namespace MiRenta.API.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
             Result result = await _tenantService.DeleteAsync(id, UserId);
+
+            if (result.Success)
+                return NoContent();
+
             return ToActionResult(result);
         }
 
