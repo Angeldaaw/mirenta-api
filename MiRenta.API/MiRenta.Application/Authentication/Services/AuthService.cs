@@ -31,7 +31,7 @@ namespace MiRenta.Application.Authentication.Services
 
             // Validate credentials
             if (user == null || !_passwordHasher.Verify(request.Password, user.PasswordHash))
-                throw new Exception("Invalid credentials.");
+                return Result<AuthResponseDto>.Fail("Invalid credentials.");
 
             // Generate JWT token
             var token = GetToken(user.Id, user.Email);
@@ -53,7 +53,7 @@ namespace MiRenta.Application.Authentication.Services
         {
             // Check if email is already registered
             if (await _context.Users.AnyAsync(u => u.Email == request.Email))
-                throw new Exception("Email already in registered.");
+                return Result<AuthResponseDto>.Fail("Email already in registered.", ErrorType.Conflict);
 
             // Create new user
             var user = new User
@@ -62,7 +62,8 @@ namespace MiRenta.Application.Authentication.Services
                 Name = request.Name,
                 LastName = request.LastName,
                 Email = request.Email,
-                PasswordHash = _passwordHasher.Hash(request.Password)
+                PasswordHash = _passwordHasher.Hash(request.Password),
+                Activo = true
             };
 
             // Save user to database
@@ -71,7 +72,17 @@ namespace MiRenta.Application.Authentication.Services
 
             // Generate JWT token
             var token =  GetToken(user.Id, user.Email);
-            var result = new AuthResponseDto { Token = token };
+            var result = new AuthResponseDto
+            {
+                Token = token,
+                User = new UserDTO
+                {
+                    Name = user.Name,
+                    LastName = user.LastName,
+                    Email = user.Email
+                }
+            };
+
             return Result<AuthResponseDto>.Ok(result);
         }
 
